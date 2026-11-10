@@ -20,6 +20,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
     Character.setImage(assets.image`Back Walk 0`)
 })
+controller.combos.attachCombo("abaab", function () {
+    info.setScore(999)
+})
 info.onScore(1000, function () {
     Hamburger = sprites.create(assets.image`Hamburger`, SpriteKind.WhatIsThis)
     Character.sayText("Bro what is this?!", 5000, false)
@@ -112,45 +115,60 @@ game.onUpdate(function () {
     }
 })
 forever(function () {
-    if (Boss_Fight == true) {
-        Hamburger.follow(Character, 30)
-        Hamburger.sayText("Ahhh Take THIS", 2000, false)
-        if (Character.overlapsWith(Hamburger)) {
-            canMove = false
-            Hamburger.sayText("HAHAHAAA... I GOT YOU!", 2000, false)
-            pause(2000)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Food)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
-            sprites.destroyAllSpritesOfKind(SpriteKind.PowerUps)
-            sprites.destroyAllSpritesOfKind(SpriteKind.NotPartOfTheGame)
-            sprites.destroyAllSpritesOfKind(SpriteKind.WhatIsThis)
-            tiles.setCurrentTilemap(tilemap`Death Animation`)
-            Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(500)
-            Death_Animation = sprites.create(assets.image`Death 2`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(500)
-            Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(500)
-            Death_Animation = sprites.create(assets.image`Death 2`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(500)
-            Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(500)
-            Death_Animation = sprites.create(assets.image`Death 3`, SpriteKind.Animations)
-            music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-            pause(5000)
-            game.gameOver(false)
-        }
+    pauseUntil(() => Boss_Fight == true)
+    if (Character.overlapsWith(Hamburger)) {
+        canMove = false
+        Hamburger.sayText("HAHAHAAA... I GOT YOU!", 2000, false)
+        pause(2000)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Food)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+        sprites.destroyAllSpritesOfKind(SpriteKind.PowerUps)
+        sprites.destroyAllSpritesOfKind(SpriteKind.NotPartOfTheGame)
+        sprites.destroyAllSpritesOfKind(SpriteKind.WhatIsThis)
+        tiles.setCurrentTilemap(tilemap`Death Animation`)
+        Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(500)
+        Death_Animation = sprites.create(assets.image`Death 2`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(500)
+        Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(500)
+        Death_Animation = sprites.create(assets.image`Death 2`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(500)
+        Death_Animation = sprites.create(assets.image`Death 1`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(500)
+        Death_Animation = sprites.create(assets.image`Death 3`, SpriteKind.Animations)
+        music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+        pause(2000)
+        game.gameOver(false)
     }
 })
 forever(function () {
-    if (Boss_Fight == true) {
+    while (!(Boss_Fight)) {
+        pauseUntil(() => Boss_Fight == true)
+        Hamburger.follow(Character, 30)
+        Hamburger.sayText("Ahhh Take THIS", 2000, false)
         pause(10000)
+        Hamburger.unfollow()
+        Hamburger.sayText("Wow you are fast...", 2000, false)
+        Hamburger.sayText("I..i can't keep up!", 2000, false)
+        Hamburger.sayText("You win man", 2000, false)
+        pause(2000)
+        while (!(Hamburger.isHittingTile(CollisionDirection.Left))) {
+            pause(50)
+            Hamburger.x += -1
+        }
+        Hamburger.sayText("You may continue your journey", 2000, false)
+        pause(2000)
+        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.InBackground)
+        sprites.destroy(Hamburger, effects.confetti, 500)
+        pause(5000)
+        game.gameOver(true)
     }
 })
